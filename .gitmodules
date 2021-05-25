@@ -1,4 +1,4 @@
 [submodule "DeepSpeedExamples"]
 	path = DeepSpeedExamples
-	url = https://github.com/microsoft/DeepSpeedExamples
+	url = https://github.com/rraminen/DeepSpeedExamples
 	branch = master
