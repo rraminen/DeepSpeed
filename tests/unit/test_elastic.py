@@ -147,7 +147,7 @@ def test_proper_mbsz():
         world_size=7)
     assert mbsize == 3
 
-
+@skipIfRocm()
 def test_non_elastic_batch_params(tmpdir):
     config_dict = {
         "train_batch_size": 2,

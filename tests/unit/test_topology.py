@@ -184,6 +184,7 @@ def test_grid_pipe_data():
     assert torch.all(rank_tensor == sum(data_group))
 
 @distributed_test(world_size=4)
+@skipIfRocm()
 def test_stage_to_global():
     topo = Topo(axes=['pipe', 'data'], dims=[2, 2])
     grid = Grid(topology=topo)

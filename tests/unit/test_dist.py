@@ -14,6 +14,7 @@ def test_init():
 
 # Demonstration of pytest's paramaterization
 @pytest.mark.parametrize('number,color', [(1138, 'purple')])
+@skipIfRocm()
 def test_dist_args(number, color):
     """Outer test function with inputs from pytest.mark.parametrize(). Uses a distributed
     helper function.
