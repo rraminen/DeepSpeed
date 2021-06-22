@@ -78,8 +78,12 @@ class InferenceEngine(Module):
     def _get_model_config_generate(self):
         if hasattr(self.module, 'config'):
             self.config = self.module.config
+        else:
+            self.config = None
         if hasattr(self.module, 'generate'):
             self.generate = self.module.generate
+        else:
+            self.generate = None
 
     def _create_model_parallel_group(self):
         # Call the init process
@@ -134,6 +138,7 @@ class InferenceEngine(Module):
                                   policy=injection_policy,
                                   mp_size=self.mp_world_size,
                                   mp_group=self.mp_group,
+                                  config=self.config,
                                   fp16=(self.dtype == torch.half),
                                   training=False,
                                   quantize=(self.dtype == torch.int8),
@@ -168,9 +173,6 @@ class InferenceEngine(Module):
                                     strict=load_module_strict)
 
     def _convert_to_dtype(self):
-        assert self.dtype is not torch.int8, \
-            "This mode is not currently supported, we will add the support for quantized inference mode in the next few days."
-
         if self.dtype is torch.int8 and self.quantization_scales is None:
             quantizer = WeightQuantization(mlp_extra_grouping=self.mlp_extra_grouping)
             model, self.quantization_scales = quantizer.model_quantize(self.module,
