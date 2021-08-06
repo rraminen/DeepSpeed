@@ -16,7 +16,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--local_rank', type=int, default=-1)
 args = parser.parse_args()
 
-deepspeed.init_distributed(dist_backend='nccl')
+#deepspeed.init_distributed(dist_backend='nccl')
+dist.init_process_group(backend="nccl")
 args.local_rank = int(os.environ['LOCAL_RANK'])
 
 torch.cuda.set_device(args.local_rank)
@@ -44,25 +45,30 @@ a = (torch.rand(tensor_size, device=device) - 0.5) + 0.01 * rank
 worker_error = torch.zeros(right_tensor_size, device=device)
 server_error = torch.zeros(right_server_size, device=device)
 
-warmup = 10
-iters = 10
-
-# Warmup
-for i in range(warmup):
-    backend.compressed_allreduce(a, worker_error, server_error, local_rank)
-
-time_list = []
-
 a_sign = a.sign().add_(1).bool().float().add_(-0.5).mul_(2.0)
 scale = a.norm() / np.sqrt(a.numel())
 a_compressed = scale * a_sign
+
+warmup = 40
+iters = 40
+
+# Warmup
+for i in range(warmup):
+    #backend.compressed_allreduce(a, worker_error, server_error, local_rank)
+    torch.distributed.all_reduce(a_compressed) 
+
+time_list = []
+
+#a_sign = a.sign().add_(1).bool().float().add_(-0.5).mul_(2.0)
+#scale = a.norm() / np.sqrt(a.numel())
+#a_compressed = scale * a_sign
 
 print("Shape of the compressed buffer:", a_compressed.shape) if rank == 0 else None
 
 for i in range(iters):
     timers('compressed_allreduce').start()
-    backend.compressed_allreduce(a, worker_error, server_error, local_rank)
-    #torch.distributed.all_reduce(a_compressed)
+    #backend.compressed_allreduce(a, worker_error, server_error, local_rank)
+    torch.distributed.all_reduce(a_compressed)
     timers('compressed_allreduce').stop()
     time_list.append(timers('compressed_allreduce').elapsed())
 
