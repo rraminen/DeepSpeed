@@ -29,14 +29,18 @@ docker exec pytorch-rocm-py3.6 bash -c "cp /deepspeed_base/DeepSpeed/csrc/includ
 docker exec pytorch-rocm-py3.6 bash -c "cp /deepspeed_base/DeepSpeed/csrc/includes/patch/hip/hcc_detail/hip_cooperative_groups_helper.h /opt/rocm-4.2.0/hip/include/hip/hcc_detail/."
 
 ### INSTALL DEEPSPEED ###
+echo "INSTALL DEEPSPEED"
 docker exec pytorch-rocm-py3.6 bash -c "cd /deepspeed_base/DeepSpeed; DS_BUILD_FUSED_ADAM=1 DS_BUILD_FUSED_LAMB=1 DS_BUILD_CPU_ADAM=1 DS_BUILD_TRANSFORMER=1 DS_BUILD_STOCHASTIC_TRANSFORMER=1 DS_BUILD_UTILS=1 ./install.sh --allow_sudo 2>&1 | tee deepspeed_build_py3.6.log"
 
 ### DEEPSPEED BING BERT TESTS ###
+echo "DEEPSPEED BING BERT TESTS"
+echo "DEEPSPEED BING BERT TESTS - config"
 docker exec pytorch-rocm-py3.6 bash -c "cd /deepspeed_base/DeepSpeed/DeepSpeedExamples/bing_bert; sed -i 's/\"num_epochs\": 160/\"num_epochs\": 1/' bert_large_lamb_pipeclean.json"
 docker exec pytorch-rocm-py3.6 bash -c "cd /deepspeed_base/DeepSpeed/DeepSpeedExamples/bing_bert; sed -i 's/wikipedia/wikipedia_toy/' bert_large_lamb_pipeclean.json"
 docker exec pytorch-rocm-py3.6 bash -c "cd /deepspeed_base/DeepSpeed/DeepSpeedExamples/bing_bert; sed -i 's/\"steps_per_print\": 1000/\"steps_per_print\": 1/' deepspeed_bsz32k_lamb_config_seq512_pipeclean.json"
 docker exec pytorch-rocm-py3.6 bash -c "cd /deepspeed_base/DeepSpeed/DeepSpeedExamples/bing_bert; sed -i 's/print_steps 100/print_steps 1/' ds_train_bert_bsz32k_seq512_pipeclean.sh"
 #docker exec pytorch-rocm-py3.6 bash -c "cd /deepspeed_base/DeepSpeed/DeepSpeedExamples/bing_bert; sed -i '18 a --max_steps_per_epoch 2 \\' ds_train_bert_bsz32k_seq512_pipeclean.sh"
+echo "DEEPSPEED BING BERT TESTS - running"
 docker exec pytorch-rocm-py3.6 bash -c "cd /deepspeed_base/DeepSpeed/DeepSpeedExamples/bing_bert; HIP_VISIBLE_DEVICES=0,1,2,3 bash ds_train_bert_bsz32k_seq512_pipeclean.sh"
 #docker exec pytorch-rocm-py3.6 bash -c "cd /deepspeed_base/DeepSpeed/DeepSpeedExamples/bing_bert; mv lamb_32k_seq512_output.log lamb_32k_seq512_output_first.log"
 #docker exec pytorch-rocm-py3.6 bash -c "cd /deepspeed_base/DeepSpeed/DeepSpeedExamples/bing_bert; HIP_VISIBLE_DEVICES=0,1,2,3 bash ds_train_bert_bsz32k_seq512_pipeclean.sh"
