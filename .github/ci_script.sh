@@ -42,9 +42,9 @@ docker exec pytorch-rocm-py3.6 bash -c "cd /deepspeed_base/DeepSpeed/DeepSpeedEx
 #docker exec pytorch-rocm-py3.6 bash -c "cd /deepspeed_base/DeepSpeed/DeepSpeedExamples/bing_bert; sed -i '18 a --max_steps_per_epoch 2 \\' ds_train_bert_bsz32k_seq512_pipeclean.sh"
 echo "DEEPSPEED BING BERT TESTS - running"
 docker exec pytorch-rocm-py3.6 bash -c "cd /deepspeed_base/DeepSpeed/DeepSpeedExamples/bing_bert; HIP_VISIBLE_DEVICES=0,1,2,3 bash ds_train_bert_bsz32k_seq512_pipeclean.sh"
-var1 = $(ls)
-var2 = $(pwd)
-var3 =$(ls DeepSpeed/DeepSpeedExamples/bing_bert)
+var1=$(ls)
+var2=$(pwd)
+var3=$(ls DeepSpeed/DeepSpeedExamples/bing_bert)
 echo "ls $var1"
 echo "pwd $var2"
 echo "ls DeepSpeed/DeepSpeedExamples/bing_bert $var3"
