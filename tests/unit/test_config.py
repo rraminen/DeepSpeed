@@ -3,7 +3,11 @@ import torch
 import pytest
 import json
 import argparse
+<<<<<<< HEAD
 from common import distributed_test, skipIfRocm
+=======
+from common import distributed_test, get_test_path
+>>>>>>> upstream/master
 from simple_model import SimpleModel, create_config_from_dict, random_dataloader
 import torch.distributed as dist
 
@@ -63,7 +67,7 @@ def test_batch_config(num_ranks, batch, micro_batch, gas, success):
         assert dist.get_world_size() == num_ranks, \
         'The test assumes a world size of f{num_ranks}'
 
-        ds_batch_config = 'tests/unit/ds_batch_config.json'
+        ds_batch_config = get_test_path('ds_batch_config.json')
         ds_config = DeepSpeedConfig(ds_batch_config)
 
         #test cases when all parameters are provided
