@@ -156,6 +156,7 @@ RUN rm -rf /usr/lib/python3/dist-packages/yaml && \
 ###############################################################################
 RUN git clone https://github.com/ROCmSoftwarePlatform/cupy ${STAGE_DIR}/cupy
 RUN cd ${STAGE_DIR}/cupy && \
+        git checkout tags/v9.5.0 && \
         git submodule update --init && \
         CUPY_INSTALL_USE_HIP=1 ROCM_HOME=/opt/rocm pip install -e . --no-cache-dir -vvvv
 RUN rm -rf ${STAGE_DIR}/cupy
