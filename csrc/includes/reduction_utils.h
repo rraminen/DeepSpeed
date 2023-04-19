@@ -274,7 +274,7 @@ template <>
 DS_D_INLINE __half2 init<ROpType::Add>()
 {
 #if defined(__HIP_PLATFORM_HCC__)
-    constexpr __half2_raw zero = {0x0000};
+    constexpr __half2_raw zero = {_Float16_2{0x0000,0x0000}};
 #else
     constexpr __half2_raw zero = {0x0000, 0x0000};
 #endif
@@ -285,7 +285,7 @@ template <>
 DS_D_INLINE __half2 init<ROpType::Min>()
 {
 #if defined(__HIP_PLATFORM_HCC__)
-    constexpr __half2_raw inf = {0x7C00};
+    constexpr __half2_raw inf = {_Float16_2{0x7C00,0x7C00}};
 #else
     constexpr __half2_raw inf = {0x7C00, 0x7C00};
 #endif
@@ -296,7 +296,7 @@ template <>
 DS_D_INLINE __half2 init<ROpType::Max>()
 {
 #if defined(__HIP_PLATFORM_HCC__)
-    constexpr __half2_raw neg_inf = {0xFC00};
+    constexpr __half2_raw neg_inf = {_Float16_2{0xFC00,0xFC00}};
 #else
     constexpr __half2_raw neg_inf = {0xFC00, 0xFC00};
 #endif
