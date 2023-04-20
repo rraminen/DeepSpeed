@@ -190,10 +190,17 @@ __global__ void apply_rotary_pos_emb1(__half* mixed_query,
             float rotary_sign = (lane > (half_dim - 1) ? -1.0 : 1.0);
             float q_rot = (q * rotary_sign);
             float k_rot = (k * rotary_sign);
+#if defined(__HIP_PLATFORM_HCC__)
+            auto q_rot_tmp = lane < half_dim ? __shfl(q_rot, lane + half_dim)
+                                             : __shfl(q_rot, lane - half_dim);
+            auto k_rot_tmp = lane < half_dim ? __shfl(k_rot, lane + half_dim)
+                                             : __shfl(k_rot, lane - half_dim);
+#else
             auto q_rot_tmp = lane < half_dim ? __shfl_sync(mask[lane], q_rot, lane + half_dim)
                                              : __shfl_sync(mask[lane], q_rot, lane - half_dim);
             auto k_rot_tmp = lane < half_dim ? __shfl_sync(mask[lane], k_rot, lane + half_dim)
                                              : __shfl_sync(mask[lane], k_rot, lane - half_dim);
+#endif
             q = q * cosf(inv_freq) + q_rot_tmp * sinf(inv_freq);
             k = k * cosf(inv_freq) + k_rot_tmp * sinf(inv_freq);
 
