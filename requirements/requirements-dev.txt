@@ -1,7 +1,8 @@
 clang-format
 docutils<0.18
 importlib-metadata>=4
-pre-commit>=2.20.0
+megatron-lm==1.1.5
+pre-commit
 pytest
 pytest-forked
 pytest-randomly
