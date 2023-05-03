@@ -5,12 +5,12 @@ Copyright 2019 The Microsoft DeepSpeed Team
 import torch
 from torch.distributed.distributed_c10d import _get_global_rank
 import torch.distributed as dist
-from torch._six import inf
 from packaging import version as pkg_version
 
 from deepspeed.runtime import ZeROOptimizer
 from deepspeed.runtime.fp16.loss_scaler import LossScaler, DynamicLossScaler
-from deepspeed.runtime.utils import (bwc_tensor_model_parallel_rank,
+from deepspeed.runtime.utils import (inf,
+                                     bwc_tensor_model_parallel_rank,
                                      get_global_norm,
                                      see_memory_usage,
                                      is_model_parallel_parameter,

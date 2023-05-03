@@ -16,7 +16,6 @@ from torch.cuda import Event, Stream
 from torch.nn import Module, Parameter
 import torch.distributed as dist
 import math
-from torch._six import inf
 from torch.nn import Module
 from torch.nn.parameter import Parameter
 
@@ -24,7 +23,7 @@ from deepspeed.runtime import ZeROOptimizer
 from deepspeed.utils.logging import logger
 from deepspeed.runtime.fp16.loss_scaler import LossScaler, DynamicLossScaler
 from deepspeed.runtime.comm.coalesced_collectives import reduce_scatter_coalesced
-from deepspeed.runtime.utils import get_global_norm, see_memory_usage, is_model_parallel_parameter, DummyOptim
+from deepspeed.runtime.utils import inf, get_global_norm, see_memory_usage, is_model_parallel_parameter, DummyOptim
 from deepspeed.runtime.zero.partition_parameters import *
 from deepspeed.runtime.zero.partition_parameters import _init_external_params
 from deepspeed.runtime.zero.constants import ZERO_OPTIMIZATION_WEIGHTS
