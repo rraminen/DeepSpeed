@@ -41,6 +41,8 @@ from op_builder.builder import installed_cuda_version
 is_rocm_pytorch = OpBuilder.is_rocm_pytorch()
 rocm_version = OpBuilder.installed_rocm_version()
 
+ROCm_incompatible_extensions = ["async_io", "sparse_attn", "utils", "quantizer", "random_ltd", "transformer_inference"]
+
 RED_START = '\033[31m'
 RED_END = '\033[0m'
 ERROR = f"{RED_START} [ERROR] {RED_END}"
@@ -146,8 +148,10 @@ def op_envvar(op_name):
 
 def op_enabled(op_name):
     env_var = op_envvar(op_name)
-    return int(os.environ.get(env_var, BUILD_OP_DEFAULT))
-
+    if is_rocm_pytorch and op_name in ROCm_incompatible_extensions:
+        return 0
+    else:
+        return int(os.environ.get(env_var, BUILD_OP_DEFAULT))
 
 compatible_ops = dict.fromkeys(ALL_OPS.keys(), False)
 install_ops = dict.fromkeys(ALL_OPS.keys(), False)
@@ -163,7 +167,7 @@ for op_name, builder in ALL_OPS.items():
         abort(f"Unable to pre-compile {op_name}")
 
     # If op is compatible but install is not enabled (JIT mode).
-    if is_rocm_pytorch and op_compatible and not op_enabled(op_name):
+    if is_rocm_pytorch and op_compatible and not op_enabled(op_name) and op_name not in ROCm_incompatible_extensions:
         builder.hipify_extension()
 
     # If op install enabled, add builder to extensions.
